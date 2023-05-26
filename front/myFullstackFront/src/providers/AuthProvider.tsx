@@ -20,12 +20,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const jwt = require("jsonwebtoken");
     const token = localStorage.getItem("@keySecret:token");
-    const decoded = jwt.verify(token, "your secret or key");
-    const userId = decoded.id;
-    localStorage.setItem("userId", userId);
 
     if (!token) {
       return;
@@ -37,12 +32,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const signIn = async (data: LoginData) => {
     try {
       const response = await api.post("/login", data);
-      const { token } = response.data;
-      console.log(response.data);
+      const { token, id } = response.data;
 
       api.defaults.headers.common.authorization = `Bearer ${token}`;
       localStorage.setItem("@keySecret:token", token);
-      // navigate("dashboard");
+      localStorage.setItem("@IDClient:ID", id);
+      navigate("dashboard");
     } catch (error) {
       console.log(error);
     }

@@ -8,6 +8,8 @@ interface Client {
   phone: string;
   gender: string;
   dateRegister: string;
+  clientCity: string;
+  clientPhoto: string;
   contact: Contact[];
 }
 interface Contact {
@@ -17,20 +19,19 @@ interface Contact {
   phone: string;
   dateRegister: string;
   gender: string;
+  contactPhoto: string;
 }
 const Dashboard = () => {
   const [client, setClient] = useState<Client[]>([]);
   useEffect(() => {
-    const getClient = () => {
-      (async () => {
-        const clientId = localStorage.getItem("userId");
-
-        const response = await api.get<Client[]>(`client/${clientId}`);
-        setClient(response.data);
-      })();
-    };
-    getClient();
+    (async () => {
+      const idClient = localStorage.getItem("@IDClient:ID");
+      const response = await api.get<Client>(`client/${idClient}`);
+      const clientArray = [response.data];
+      setClient(clientArray);
+    })();
   }, []);
+
   return (
     <div>
       <h1>Dashboard</h1>
@@ -40,6 +41,8 @@ const Dashboard = () => {
           <p>{item.phone}</p>
           <p>{item.gender}</p>
           <p>{item.dateRegister}</p>
+          <p>{item.clientCity}</p>
+          <p>{item.clientPhoto}</p>
           {item.contact.map((contact) => (
             <div key={contact.id}>
               <p>{contact.contactName}</p>
@@ -47,6 +50,7 @@ const Dashboard = () => {
               <p>{contact.phone}</p>
               <p>{contact.gender}</p>
               <p>{contact.dateRegister}</p>
+              <p>{contact.contactPhoto}</p>
             </div>
           ))}
         </div>
