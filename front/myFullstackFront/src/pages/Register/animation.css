@@ -1,0 +1,5 @@
+.container-register {
+  background-image: url("./../../assets/registersiteGIF.gif");
+  background-size: cover;
+  backdrop-filter: opacity(20%);
+}

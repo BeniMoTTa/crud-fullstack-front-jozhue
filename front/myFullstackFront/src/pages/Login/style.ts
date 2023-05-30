@@ -48,7 +48,9 @@ export const StyledLogin = styled.div`
     line-height: 1.2;
     text-align: center;
     font-family: "Righteous", cursive;
+    font-weight: bolder;
   }
+
   @keyframes shine {
     0% {
       color: #fff;
@@ -90,7 +92,7 @@ export const StyledLogin = styled.div`
       height: 45px;
       background-color: transparent;
       padding: 0 5px;
-      font-family: "Righteous", cursive;
+      font-family: Arial, Helvetica, sans-serif, cursive;
     }
     .focus-input {
       position: absolute;
@@ -101,7 +103,7 @@ export const StyledLogin = styled.div`
       left: 0;
       pointer-events: none;
       color: #adadad;
-      font-family: "Righteous", cursive;
+      font-family: Arial, Helvetica, sans-serif, cursive;
       letter-spacing: 3px;
     }
 
@@ -135,7 +137,6 @@ export const StyledLogin = styled.div`
       top: 16px;
       left: 0px;
       padding-left: 5px;
-
       -webkit-transition: all 0.4s;
       -o-transition: all 0.4s;
       -moz-transition: all 0.4s;
@@ -151,6 +152,12 @@ export const StyledLogin = styled.div`
     .input:focus + .focus-input::before {
       width: 100%;
     }
+    .has-val + .focus-input::after {
+      top: -15px;
+    }
+    .has-val + .focus-input::before {
+      width: 100%;
+    }
     .div-btn-login {
       display: flex;
       flex-wrap: wrap;
@@ -158,6 +165,7 @@ export const StyledLogin = styled.div`
       padding-bottom: 13px;
       width: 100%;
     }
+
     .login-btn {
       font-size: 15px;
       border: none;

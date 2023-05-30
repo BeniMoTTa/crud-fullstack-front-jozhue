@@ -1,0 +1,34 @@
+@media (min-width: 375px) {
+  .container-general {
+    width: 100%;
+    height: 100vh;
+    padding-top: 100px;
+    padding-right: 4%;
+    padding-left: 2%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+@media (min-width: 600px) {
+  .container-general {
+    width: 100%;
+    height: 100vh;
+    padding-top: 100px;
+    padding-right: 4%;
+    padding-left: 2%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+@media (min-width: 980px) {
+  .container-general {
+    padding-top: 100px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+}

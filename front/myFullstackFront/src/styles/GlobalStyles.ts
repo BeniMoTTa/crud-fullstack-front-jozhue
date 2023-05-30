@@ -20,6 +20,21 @@ export default createGlobalStyle`
     --color-gray-300: #e0e0e0;
     --color-gray-200: #eeeeee;
     --color-gray-100: #f5f5f5;
+    --white100: #ffffff;
+    --black100: #303030;
+    --blackAll: #000;
+    --font-title-0: 36px;
+	  --font-size-0: 32px;
+	  --font-size-1: 26px;
+	  --font-size-2: 22px;
+	  --font-size-3: 18px;
+	  --font-size-4: 16px;
+	  --font-size-5: 14px;
+	  --font-size-6: 12px;
+	  --font-weight-1: 700;
+	  --font-weight-2: 600;
+	  --font-weight-3: 400;
+	  --line-height: 150%;
 
     font-size: 60%;   
   }
