@@ -5,6 +5,7 @@ import { api } from "../services/api";
 interface ClientProviderProps {
   children: ReactNode;
 }
+
 export interface Client {
   id: string;
   clientName: string;
@@ -16,15 +17,15 @@ export interface Client {
   email: string;
   contact: Contact[];
 }
+
 export interface Contact {
   id: string;
   contactName: string;
   email: string;
   phone: string;
-  dateRegister: string;
+
   gender: string;
   contactCity: string;
-  client: Client[];
 }
 interface CLientContextValues {
   client: Client[];

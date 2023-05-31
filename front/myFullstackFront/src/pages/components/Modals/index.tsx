@@ -1,12 +1,15 @@
 import { createPortal } from "react-dom";
-import { StyledModalCreate } from "./style";
-import { useEffect, useRef } from "react";
 
-interface ModalCreateProps {
+import { ReactNode, useEffect, useRef } from "react";
+import { StyledModals } from "./style";
+
+interface ModalsProps {
   toggleModal: () => void;
+  blockClosing?: boolean;
+  children: ReactNode;
 }
 
-const ModalCreateContact = ({ toggleModal }: ModalCreateProps) => {
+const Modals = ({ toggleModal, children, blockClosing }: ModalsProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,13 +31,14 @@ const ModalCreateContact = ({ toggleModal }: ModalCreateProps) => {
     return () => {
       window.removeEventListener("mousedown", handleClick);
     };
-  }, []);
+  }, [toggleModal]);
+
   return createPortal(
-    <StyledModalCreate>
-      <div ref={ref}></div>
-    </StyledModalCreate>,
+    <StyledModals>
+      <div ref={blockClosing ? null : ref}>{children}</div>
+    </StyledModals>,
     document.body
   );
 };
 
-export default ModalCreateContact;
+export default Modals;

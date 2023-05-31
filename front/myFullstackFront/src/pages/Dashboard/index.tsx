@@ -14,8 +14,8 @@ import noSay from "../../assets/NoSay.gif";
 import { CiEdit } from "react-icons/ci";
 import "./animation.css";
 import { Client, Contact } from "../../providers/ClientProvider";
-import { useClient } from "../../hooks/clientAuth";
-import ModalCreateContact from "./components/Modals";
+import ModalCreateContact from "./components/Modals/CreateContact";
+import ModalDeleteContact from "./components/Modals/DeleteContact";
 
 const Dashboard = () => {
   const [imageUrl, setImageUrl] = useState("");
@@ -23,9 +23,12 @@ const Dashboard = () => {
   const [contact, setContact] = useState<Contact[]>([]);
   const [filter, setFilter] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
+  const [infoContact, setInfoContact] = useState<Contact>();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const idClient = localStorage.getItem("@IDClient:ID");
 
-  const toggleModal = () => setIsOpen(!modalIsOpen);
+  const toggleModalDelete = () => setIsDeleteModalOpen(!isDeleteModalOpen);
+  const toggleModalCreate = () => setIsOpen(!modalIsOpen);
 
   const apiKey = "66iuuxcsVoQmd44vgbbBEQh0JNMuWMk4pR6JN1MJ9kHBWX9h1goLEp6U";
   useEffect(() => {
@@ -37,6 +40,7 @@ const Dashboard = () => {
     (async () => {
       const response = await api.get<Client>(`client/${idClient}`);
       const contactArray = response.data.contact;
+
       const flattenedContactArray = contactArray.flat();
       setContact(flattenedContactArray);
     })();
@@ -60,6 +64,11 @@ const Dashboard = () => {
     const intervalId = setInterval(fetchImage, 30000);
     return () => clearInterval(intervalId);
   }, []);
+
+  const handleDelete = (contact: Contact) => {
+    console.log(contact);
+    setInfoContact(contact);
+  };
   const contactFiltered = contact.filter(
     (contacts) =>
       contacts.contactName.toLowerCase().includes(filter.toLowerCase()) ||
@@ -81,8 +90,8 @@ const Dashboard = () => {
             <main className="main-choice" key={elem.id}>
               <header className="painel-header">
                 <h3 className="title-header">Contacts</h3>
-                <button className="create" onClick={toggleModal}>
-                  <IoIosContact onClick={toggleModal} />
+                <button className="create" onClick={toggleModalCreate}>
+                  <IoIosContact />
                 </button>
               </header>
               <div className="area-search">
@@ -137,13 +146,41 @@ const Dashboard = () => {
                         </div>
                       </div>
                       <div className="btn-contact">
-                        <button className="delete">
+                        <button
+                          key={contact.id}
+                          value={contact.id}
+                          id={contact.id}
+                          className="delete"
+                          onClick={() => {
+                            handleDelete(contact);
+                            toggleModalDelete();
+                          }}
+                        >
                           <MdDelete />
                         </button>
                         <button className="edit">
                           <CiEdit />
                         </button>
                       </div>
+                      {isDeleteModalOpen && (
+                        <ModalDeleteContact
+                          toggleModalDelete={toggleModalDelete}
+                          contact={
+                            infoContact as {
+                              id: string;
+                              email: string;
+                              contactName: string;
+                              phone: string;
+                              gender:
+                                | "male"
+                                | "female"
+                                | "no binary"
+                                | "uniformed";
+                              contactCity: string;
+                            }
+                          }
+                        />
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -151,7 +188,12 @@ const Dashboard = () => {
             </main>
           ))}
         </div>
-        {modalIsOpen && <ModalCreateContact toggleModal={toggleModal} />}
+        {modalIsOpen && (
+          <ModalCreateContact
+            toggleModalCreate={toggleModalCreate}
+            setContact={setContact}
+          />
+        )}
       </StyledDashboard>
     </Container>
   );

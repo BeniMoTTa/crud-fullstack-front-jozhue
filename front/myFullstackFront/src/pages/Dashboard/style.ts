@@ -519,7 +519,7 @@ export const StyledDashboard = styled.div`
     }
   }
 
-  @media (min-width: 980px) {
+  @media (min-width: 1100px) {
     .main-choice {
       max-width: 900px;
       height: 90%;

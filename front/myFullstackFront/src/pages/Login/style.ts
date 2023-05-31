@@ -129,7 +129,6 @@ export const StyledLogin = styled.div`
       font-size: 15px;
       color: #999;
       line-height: 1.2;
-
       content: attr(data-placeholder);
       display: block;
       width: 100%;
