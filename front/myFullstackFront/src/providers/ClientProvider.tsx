@@ -23,21 +23,29 @@ export interface Contact {
   contactName: string;
   email: string;
   phone: string;
-
   gender: string;
   contactCity: string;
 }
 interface CLientContextValues {
   client: Client[];
+  deleteClient: () => void;
 }
 export const ClientContext = createContext({} as CLientContextValues);
 
 const ClientProvider = ({ children }: ClientProviderProps) => {
   const [client, setClient] = useState<Client[]>([]);
 
+  const idClient = localStorage.getItem("@IDClient:ID");
+
+  const deleteClient = async () => {
+    try {
+      await api.delete(`client/${idClient}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     (async () => {
-      const idClient = localStorage.getItem("@IDClient:ID");
       const response = await api.get<Client>(`client/${idClient}`);
       const clientArray = [response.data];
 
@@ -46,7 +54,7 @@ const ClientProvider = ({ children }: ClientProviderProps) => {
   }, []);
 
   return (
-    <ClientContext.Provider value={{ client }}>
+    <ClientContext.Provider value={{ client, deleteClient }}>
       {children}
     </ClientContext.Provider>
   );

@@ -16,26 +16,34 @@ import "./animation.css";
 import { Client, Contact } from "../../providers/ClientProvider";
 import ModalCreateContact from "./components/Modals/CreateContact";
 import ModalDeleteContact from "./components/Modals/DeleteContact";
+import ModalUpdateContact from "./components/Modals/UpdateContact";
+import ModalDeleteClient from "./components/Modals/DeleteClient";
 
 const Dashboard = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [client, setClient] = useState<Client[]>([]);
+  const [paranaue, setParanaue] = useState<Client>();
   const [contact, setContact] = useState<Contact[]>([]);
   const [filter, setFilter] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
   const [infoContact, setInfoContact] = useState<Contact>();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isDeleteModalClient, setIsDeleteModalClient] = useState(false);
   const idClient = localStorage.getItem("@IDClient:ID");
 
   const toggleModalDelete = () => setIsDeleteModalOpen(!isDeleteModalOpen);
   const toggleModalCreate = () => setIsOpen(!modalIsOpen);
-
+  const toggleModalUpdate = () => setIsUpdateModalOpen(!isUpdateModalOpen);
+  const toggleModalDeleteClient = () =>
+    setIsDeleteModalClient(!isDeleteModalClient);
   const apiKey = "66iuuxcsVoQmd44vgbbBEQh0JNMuWMk4pR6JN1MJ9kHBWX9h1goLEp6U";
   useEffect(() => {
     (async () => {
       const response = await api.get<Client>(`client/${idClient}`);
       const clientArray = [response.data];
       setClient(clientArray);
+      setParanaue(response.data);
     })();
     (async () => {
       const response = await api.get<Client>(`client/${idClient}`);
@@ -63,10 +71,9 @@ const Dashboard = () => {
     fetchImage();
     const intervalId = setInterval(fetchImage, 30000);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [idClient]);
 
-  const handleDelete = (contact: Contact) => {
-    console.log(contact);
+  const handleClick = (contact: Contact) => {
     setInfoContact(contact);
   };
   const contactFiltered = contact.filter(
@@ -79,8 +86,14 @@ const Dashboard = () => {
 
   return (
     <Container>
-      <AsideMenu />
-      <Header />
+      <AsideMenu
+        client={client}
+        toggleModalDeleteClient={toggleModalDeleteClient}
+      />
+      <Header
+        client={client}
+        toggleModalDeleteClient={toggleModalDeleteClient}
+      />
       <StyledDashboard>
         <div
           className="container-general"
@@ -147,40 +160,27 @@ const Dashboard = () => {
                       </div>
                       <div className="btn-contact">
                         <button
-                          key={contact.id}
                           value={contact.id}
                           id={contact.id}
                           className="delete"
                           onClick={() => {
-                            handleDelete(contact);
+                            handleClick(contact);
                             toggleModalDelete();
                           }}
                         >
                           <MdDelete />
                         </button>
-                        <button className="edit">
+                        <button
+                          className="edit"
+                          value={contact.id}
+                          onClick={() => {
+                            handleClick(contact);
+                            toggleModalUpdate();
+                          }}
+                        >
                           <CiEdit />
                         </button>
                       </div>
-                      {isDeleteModalOpen && (
-                        <ModalDeleteContact
-                          toggleModalDelete={toggleModalDelete}
-                          contact={
-                            infoContact as {
-                              id: string;
-                              email: string;
-                              contactName: string;
-                              phone: string;
-                              gender:
-                                | "male"
-                                | "female"
-                                | "no binary"
-                                | "uniformed";
-                              contactCity: string;
-                            }
-                          }
-                        />
-                      )}
                     </li>
                   ))}
                 </ul>
@@ -188,6 +188,42 @@ const Dashboard = () => {
             </main>
           ))}
         </div>
+        {isDeleteModalOpen && (
+          <ModalDeleteContact
+            toggleModalDelete={toggleModalDelete}
+            contact={
+              infoContact as {
+                id: string;
+                email: string;
+                contactName: string;
+                phone: string;
+                gender: "male" | "female" | "no binary" | "uniformed";
+                contactCity: string;
+              }
+            }
+          />
+        )}
+        {isDeleteModalClient && (
+          <ModalDeleteClient
+            toggleModalDeleteClient={toggleModalDeleteClient}
+            client={paranaue}
+          />
+        )}
+        {isUpdateModalOpen && (
+          <ModalUpdateContact
+            toggleModalUpdate={toggleModalUpdate}
+            contact={
+              infoContact as {
+                id: string;
+                email: string;
+                contactName: string;
+                phone: string;
+                gender: "male" | "female" | "no binary" | "uniformed";
+                contactCity: string;
+              }
+            }
+          />
+        )}
         {modalIsOpen && (
           <ModalCreateContact
             toggleModalCreate={toggleModalCreate}

@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
 import Modals from "../../../../components/Modals";
-import { contactData } from "../CreateContact/validator";
+
 import { StyledModalDelete } from "./style";
 import { api } from "../../../../../services/api";
 import { Contact } from "../../../../../providers/ClientProvider";
@@ -14,19 +13,18 @@ const ModalDeleteContact = ({
   toggleModalDelete,
   contact,
 }: ModalDeleteContact) => {
-  const [infoContact, setInfoContact] = useState<Contact>();
-
-  // const handleDeleteContact = async (id: string) => {
-  //   await api.delete(`contact/${id}`);
-  //   console.log(id);
-  // };
-  const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
+  const deleteContact = async (id: string) => {
+    try {
+      const response = await api.delete(`contact/${id}`);
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
     <Modals toggleModal={toggleModalDelete}>
-      <StyledModalDelete onClick={handleModalClick}>
+      <StyledModalDelete>
         <h4 className="h4">
           Do you really want to delete{" "}
           <span className="contact">{contact.contactName}</span>?
@@ -37,7 +35,11 @@ const ModalDeleteContact = ({
           </button>
           <button
             className="confirm"
-            // onClick={() => handleDeleteContact(contact.id)}
+            onClick={() => {
+              deleteContact(contact.id);
+              toggleModalDelete();
+              location.reload();
+            }}
           >
             Confirm
           </button>

@@ -104,6 +104,19 @@ export const ButtonDiv = styled.div`
     font-weight: var(--font-weight-3);
     font-family: var(--font-family-1);
   }
+  .deleteClient {
+    border: none;
+    background-color: transparent;
+    color: var(--white100);
+    font-size: 15px;
+    margin-top: 50px;
+    font-family: "Righteous", cursive;
+
+    span:hover {
+      font-size: 20px;
+      text-decoration: underline;
+    }
+  }
 `;
 
 export const AsideFooter = styled.footer`

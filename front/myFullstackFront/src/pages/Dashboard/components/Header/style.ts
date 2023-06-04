@@ -137,4 +137,31 @@ export const StyledHeader = styled.div`
       }
     }
   }
+  .buttonDelete {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .deleteClient {
+    width: 90%;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    font-size: 2rem;
+    font-family: "righteous";
+
+    span:hover {
+      font-size: 2.3rem;
+      text-decoration: underline;
+    }
+  }
+  .logout {
+    width: fit-content;
+    padding: 8px;
+    font-size: 1.2rem;
+    font-family: "righteous";
+  }
+  .logout:hover {
+    transform: scale(1.1);
+  }
 `;
