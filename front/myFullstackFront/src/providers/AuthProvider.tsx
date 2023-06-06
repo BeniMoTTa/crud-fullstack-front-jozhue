@@ -21,7 +21,7 @@ export const AuthContext = createContext({} as AuthContextValues);
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("@keySecret:token");
@@ -48,6 +48,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     } catch (error) {
       console.log(error);
       toast.error("An error occurred, please check the fields correctly");
+    } finally {
+      setLoading(false);
     }
   };
 
