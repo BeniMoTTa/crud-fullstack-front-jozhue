@@ -1,5 +1,5 @@
-import { ReactNode, createContext, useEffect, useState } from "react";
-
+import React, { ReactNode, createContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { api } from "../services/api";
 
 interface ClientProviderProps {
@@ -28,33 +28,56 @@ export interface Contact {
 }
 interface CLientContextValues {
   client: Client[];
-  deleteClient: () => void;
+  setContacts: React.Dispatch<React.SetStateAction<Contact[]>>;
+  setEditingContact: React.Dispatch<React.SetStateAction<Contact | null>>;
+  handleEditContact: () => Promise<void>;
+  editingContact: Contact | null;
+  contacts: Contact[];
 }
 export const ClientContext = createContext({} as CLientContextValues);
 
 const ClientProvider = ({ children }: ClientProviderProps) => {
   const [client, setClient] = useState<Client[]>([]);
-
+  const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const idClient = localStorage.getItem("@IDClient:ID");
+  const [contacts, setContacts] = useState<Contact[]>([]);
 
-  const deleteClient = async () => {
+  const handleEditContact = async () => {
     try {
-      await api.delete(`client/${idClient}`);
+      if (!editingContact) {
+        return;
+      }
+
+      const res = await api.patch(
+        `/contact/${editingContact.id}`,
+        editingContact
+      );
+      const updatedContact = res.data;
+
+      setEditingContact(null);
+
+      setContacts((prevContacts) =>
+        prevContacts.map((contact) =>
+          contact.id === updatedContact.id ? updatedContact : contact
+        )
+      );
+      toast.success("Infos updated!");
     } catch (error) {
-      console.log(error);
+      toast.error("Error!");
     }
   };
-  useEffect(() => {
-    (async () => {
-      const response = await api.get<Client>(`client/${idClient}`);
-      const clientArray = [response.data];
-
-      setClient(clientArray);
-    })();
-  }, []);
 
   return (
-    <ClientContext.Provider value={{ client, deleteClient }}>
+    <ClientContext.Provider
+      value={{
+        client,
+        setContacts,
+        editingContact,
+        setEditingContact,
+        handleEditContact,
+        contacts,
+      }}
+    >
       {children}
     </ClientContext.Provider>
   );

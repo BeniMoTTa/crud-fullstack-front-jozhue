@@ -18,19 +18,22 @@ import ModalCreateContact from "./components/Modals/CreateContact";
 import ModalDeleteContact from "./components/Modals/DeleteContact";
 import ModalUpdateContact from "./components/Modals/UpdateContact";
 import ModalDeleteClient from "./components/Modals/DeleteClient";
+import { useClient } from "../../hooks/clientAuth";
 
 const Dashboard = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [client, setClient] = useState<Client[]>([]);
   const [paranaue, setParanaue] = useState<Client>();
-  const [contact, setContact] = useState<Contact[]>([]);
+
   const [filter, setFilter] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
   const [infoContact, setInfoContact] = useState<Contact>();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalClient, setIsDeleteModalClient] = useState(false);
+  const { setEditingContact, setContacts, contacts } = useClient();
   const idClient = localStorage.getItem("@IDClient:ID");
+  const token = localStorage.getItem("@keySecret:token");
 
   const toggleModalDelete = () => setIsDeleteModalOpen(!isDeleteModalOpen);
   const toggleModalCreate = () => setIsOpen(!modalIsOpen);
@@ -40,17 +43,23 @@ const Dashboard = () => {
   const apiKey = "66iuuxcsVoQmd44vgbbBEQh0JNMuWMk4pR6JN1MJ9kHBWX9h1goLEp6U";
   useEffect(() => {
     (async () => {
-      const response = await api.get<Client>(`client/${idClient}`);
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+      const response = await api.get<Client>(`client/${idClient}`, config);
       const clientArray = [response.data];
-      setClient(clientArray);
-      setParanaue(response.data);
-    })();
-    (async () => {
-      const response = await api.get<Client>(`client/${idClient}`);
       const contactArray = response.data.contact;
 
       const flattenedContactArray = contactArray.flat();
-      setContact(flattenedContactArray);
+      setContacts(flattenedContactArray);
+      setClient(clientArray);
+      setParanaue(response.data);
+    })();
+
+    (async () => {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
     })();
 
     const fetchImage = async () => {
@@ -75,13 +84,14 @@ const Dashboard = () => {
 
   const handleClick = (contact: Contact) => {
     setInfoContact(contact);
+    setEditingContact(contact);
   };
-  const contactFiltered = contact.filter(
+  const contactFiltered = contacts.filter(
     (contacts) =>
-      contacts.contactName.toLowerCase().includes(filter.toLowerCase()) ||
-      contacts.contactCity.toLowerCase().includes(filter.toLowerCase()) ||
-      contacts.email.toLowerCase().includes(filter.toLowerCase()) ||
-      contacts.phone.includes(filter)
+      contacts.contactName?.toLowerCase().includes(filter.toLowerCase()) ||
+      contacts.contactCity?.toLowerCase().includes(filter.toLowerCase()) ||
+      contacts.email?.toLowerCase().includes(filter.toLowerCase()) ||
+      contacts.phone?.includes(filter)
   );
 
   return (
@@ -172,7 +182,6 @@ const Dashboard = () => {
                         </button>
                         <button
                           className="edit"
-                          value={contact.id}
                           onClick={() => {
                             handleClick(contact);
                             toggleModalUpdate();
@@ -210,24 +219,12 @@ const Dashboard = () => {
           />
         )}
         {isUpdateModalOpen && (
-          <ModalUpdateContact
-            toggleModalUpdate={toggleModalUpdate}
-            contact={
-              infoContact as {
-                id: string;
-                email: string;
-                contactName: string;
-                phone: string;
-                gender: "male" | "female" | "no binary" | "uniformed";
-                contactCity: string;
-              }
-            }
-          />
+          <ModalUpdateContact toggleModalUpdate={toggleModalUpdate} />
         )}
         {modalIsOpen && (
           <ModalCreateContact
             toggleModalCreate={toggleModalCreate}
-            setContact={setContact}
+            setContact={setContacts}
           />
         )}
       </StyledDashboard>

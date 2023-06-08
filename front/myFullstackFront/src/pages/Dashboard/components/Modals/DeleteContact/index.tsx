@@ -1,8 +1,9 @@
 import Modals from "../../../../components/Modals";
-
+import { toast } from "react-toastify";
 import { StyledModalDelete } from "./style";
 import { api } from "../../../../../services/api";
 import { Contact } from "../../../../../providers/ClientProvider";
+import { useClient } from "../../../../../hooks/clientAuth";
 
 interface ModalDeleteContact {
   toggleModalDelete: () => void;
@@ -13,12 +14,18 @@ const ModalDeleteContact = ({
   toggleModalDelete,
   contact,
 }: ModalDeleteContact) => {
+  const { setContacts } = useClient();
   const deleteContact = async (id: string) => {
     try {
-      const response = await api.delete(`contact/${id}`);
-      console.log(response);
+      await api.delete(`contact/${id}`);
+
+      setContacts((prevContacts) => {
+        return prevContacts.filter((elem) => elem.id !== id);
+      });
+      toast.success("The contact was successfully removed");
     } catch (err) {
       console.log(err);
+      toast.error("There was a problem");
     }
   };
 
@@ -38,7 +45,6 @@ const ModalDeleteContact = ({
             onClick={() => {
               deleteContact(contact.id);
               toggleModalDelete();
-              location.reload();
             }}
           >
             Confirm

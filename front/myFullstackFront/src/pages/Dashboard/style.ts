@@ -22,8 +22,8 @@ export const StyledDashboard = styled.div`
       h3 {
         position: absolute;
         top: 20px;
-        left: 40%;
-        font-size: 40px;
+        left: 30%;
+        font-size: 30px;
         font-family: "Righteous", cursive;
         background-image: linear-gradient(to right, #d8315b 0%, #072ac8 100%);
         -webkit-background-clip: text;

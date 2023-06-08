@@ -105,10 +105,11 @@ export const ButtonDiv = styled.div`
     font-family: var(--font-family-1);
   }
   .deleteClient {
+    max-width: 200px;
     border: none;
     background-color: transparent;
     color: var(--white100);
-    font-size: 15px;
+    font-size: 13px;
     margin-top: 50px;
     font-family: "Righteous", cursive;
 
